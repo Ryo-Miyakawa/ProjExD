@@ -1,6 +1,7 @@
 import random
 import datetime
 import time
+
 totalalfa = 26
 tai = 10 
 kesson = 2
