@@ -7,7 +7,7 @@ def button_click(event):
     if num == "=":
         siki = entry.get() #数式の取得
         try:
-            
+
             res = eval(siki) #式の評価
             entry.delete(0,tk.END) #表示されている文字列の削除
             entry.insert(tk.END, res) #結果の挿入
@@ -42,8 +42,7 @@ for i in range(9,-1, -1):
 
 operators = ["AC","*", "/","+", "="] #追加2：オールクリアボタン、四則演算
 
-r = 1
-c = 3
+r,c = 1,3
 
 for ope in operators:
     button = tk.Button(root, text = f"{ope}",width = 4, height=2, font =("", 30))
