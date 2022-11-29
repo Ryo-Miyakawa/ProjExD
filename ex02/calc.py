@@ -7,6 +7,7 @@ def button_click(event):
     if num == "=":
         siki = entry.get() #数式の取得
         try:
+            
             res = eval(siki) #式の評価
             entry.delete(0,tk.END) #表示されている文字列の削除
             entry.insert(tk.END, res) #結果の挿入
