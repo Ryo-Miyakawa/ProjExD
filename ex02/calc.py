@@ -5,7 +5,10 @@ def button_click(event):
     btn = event.widget
     num = btn["text"]
     if num == "=":
-        pass
+        siki = entry.get() #数式の取得
+        res = eval(siki) #式の評価
+        entry.delete(0,tk.END) #表示されている文字列の削除
+        entry.insert(tk.END, res) #結果の挿入
     else:
     #tkm.showinfo("", f"{num}ボタンがクリックされました")
         entry.insert(tk.END,num)
