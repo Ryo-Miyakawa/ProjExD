@@ -74,12 +74,23 @@ if __name__ == "__main__":
     mx,my = 1,1
     cx,cy = mx*100+50, my*100+50
 
+    gx,gy = 13,7
+    gcx,gcy = gx*100+50, gy*100+50
+
+
 
     kokaton = tk.PhotoImage(file = "fig/8.png")
+
+    goal = tk.PhotoImage(file = "fig/6.png")#追加4：ゴール目印としてこうかとんの仲間の画像を右下に配置
 
     canvas.create_image(cx, cy, 
                         image = kokaton,
                         tag = "kokaton")
+
+    canvas.create_image(gcx, gcy, 
+                        image = goal,
+                        tag = "goal")
+    
     
 
 
