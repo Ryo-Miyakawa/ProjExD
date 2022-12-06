@@ -1,5 +1,6 @@
 import tkinter as tk
 import maze_maker as mm
+import tkinter.messagebox as tkm
 
 def key_down(event):
     global key
@@ -20,19 +21,35 @@ def main_proc():
     if key == "a":mx -= 2
     if key == "d":mx += 2
     if maze_lst[mx][my] == 1: #移動先が壁だったら
-        if key == "Up":my += 1
-        if key == "Down":my -= 1
-        if key == "Left":mx +=1
-        if key == "Right":mx -= 1
-        if key == "w":my +=2
-        if key == "s":my -= 2
-        if key == "a":mx += 2
-        if key == "d":mx -= 2
+        if key == "Up":
+            my += 1
+            tkm.showwarning("こうかとん", "いてっ！")#追加3：壁にぶつかったらこうかとんが反応する
+        if key == "Down":
+            my -= 1
+            tkm.showwarning("こうかとん", "いてっ！")
+        if key == "Left":
+            mx +=1
+            tkm.showwarning("こうかとん", "いてっ！")
+        if key == "Right":
+            mx -= 1
+            tkm.showwarning("こうかとん", "いてっ！")
+        if key == "w":
+            my +=2
+            tkm.showwarning("こうかとん", "さすがに無理！")
+        if key == "s":
+            my -= 2
+            tkm.showwarning("こうかとん", "さすがに無理！")
+        if key == "a":
+            mx += 2
+            tkm.showwarning("こうかとん", "さすがに無理！")
+        if key == "d":
+            mx -= 2
+            tkm.showwarning("こうかとん", "さすがに無理！")
     cx,cy = mx*100+50, my*100+50
     canvas.coords("kokaton",cx,cy)
     root.after(100,main_proc)
 
-def count_up():
+def count_up():#追加２：カウントダウン
     global tmr
     label["text"] =tmr
     tmr = tmr+1
@@ -56,12 +73,14 @@ if __name__ == "__main__":
 
     mx,my = 1,1
     cx,cy = mx*100+50, my*100+50
+
+
     kokaton = tk.PhotoImage(file = "fig/8.png")
-    
 
     canvas.create_image(cx, cy, 
                         image = kokaton,
                         tag = "kokaton")
+    
 
 
     key =""
