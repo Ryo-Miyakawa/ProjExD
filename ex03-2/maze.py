@@ -90,9 +90,6 @@ if __name__ == "__main__":
     canvas.create_image(gcx, gcy, 
                         image = goal,
                         tag = "goal")
-    
-    
-
 
     key =""
     root.bind("<KeyPress>",key_down)
