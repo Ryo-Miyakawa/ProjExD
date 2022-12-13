@@ -79,7 +79,6 @@ def main():
         if tori_rct.colliderect(bomb_rct):
             return
         
-        
         pg.display.update()
         clock.tick(1000)
 
