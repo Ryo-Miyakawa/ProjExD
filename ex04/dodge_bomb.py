@@ -46,6 +46,14 @@ def main():
     scrn_sfc.blit(bomb_sfc,bomb_rct)
 
 
+    help_sfc = pg.Surface((20,20))#正方形の空のSurface
+    help_sfc.set_colorkey((0,0,0))
+    pg.draw.circle(help_sfc,(0,255,0),(10,10),10)
+    help_rct = help_sfc.get_rect()
+    help_rct.centerx = random.randint(0,scrn_rct.width+10)
+    help_rct.centery = random.randint(0,scrn_rct.height+10)
+    scrn_sfc.blit(help_sfc,help_rct)
+
 
 
 
@@ -69,7 +77,7 @@ def main():
         if key_dct[pg.K_ESCAPE]:
             vx,vy = 0,0 #追加機能２:エスケープを押すと弾が停止
         if key_dct[pg.K_1]:
-            vx, vy = +1,+1 #追加機能３　１を押すと弾が方向を変える
+            vx, vy = +1,+1 #追加機能３：１を押すと弾が方向を変える
             
         if check_bound(tori_rct,scrn_rct) != (+1,+1):
             if key_dct[pg.K_UP]:
@@ -88,7 +96,7 @@ def main():
         scrn_sfc.blit(tori_sfc, tori_rct)
         
         #練習6
-        if key_dct[pg.K_2]:#追加機能4弾の大きさを大きくする
+        if key_dct[pg.K_2]:#追加機能4：弾を大きくする
             byoko = bomb_rct.centerx
             btate = bomb_rct.centery
             bomb_sfc = pg.Surface((100,100))
@@ -99,10 +107,18 @@ def main():
             bomb_rct.centery = btate
             scrn_sfc.blit(bomb_sfc,bomb_rct)
         bomb_rct.move_ip(vx, vy)
+        help_rct.move_ip(vx,vy)
         scrn_sfc.blit(bomb_sfc,bomb_rct)
+        scrn_sfc.blit(help_sfc,help_rct)
         yoko,tate = check_bound(bomb_rct,scrn_rct)
+        hyoko,htate = check_bound(help_rct,scrn_rct)
         vx *= yoko
         vy *= tate
+        vx *= hyoko
+        vy *= htate
+
+
+        
         
         #練習8
         if tori_rct.colliderect(bomb_rct):
@@ -113,6 +129,16 @@ def main():
             tori_rct = tori_sfc.get_rect()
             tori_rct.center = (reyoko,retate)
             scrn_sfc.blit(tori_sfc, tori_rct)#追加機能１：爆弾がこうかとんに当たると画像変更
+
+        if tori_rct.colliderect(help_rct):
+            hyoko = tori_rct.centerx
+            htate = tori_rct.centery
+            tori_sfc = pg.image.load("fig/9.png")#追加5緑の弾に当たるとこうかとんが小さくなる
+            tori_sfc = pg.transform.rotozoom(tori_sfc, 0, 0.5)
+            tori_rct = tori_sfc.get_rect()
+            tori_rct.center = (hyoko,htate)
+            scrn_sfc.blit(tori_sfc, tori_rct)
+
            
         
         pg.display.update()
