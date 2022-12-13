@@ -50,8 +50,8 @@ def main():
     help_sfc.set_colorkey((0,0,0))
     pg.draw.circle(help_sfc,(0,255,0),(10,10),10)
     help_rct = help_sfc.get_rect()
-    help_rct.centerx = random.randint(0,scrn_rct.width+10)
-    help_rct.centery = random.randint(0,scrn_rct.height+10)
+    help_rct.centerx = random.randint(0,scrn_rct.width)
+    help_rct.centery = random.randint(0,scrn_rct.height)
     scrn_sfc.blit(help_sfc,help_rct)
 
 
