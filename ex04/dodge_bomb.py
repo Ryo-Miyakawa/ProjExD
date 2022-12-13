@@ -2,6 +2,18 @@ import pygame as pg
 import sys
 import random
 
+def check_bound(obj_rct,scr_rct):
+    #第1引数：こうかとんrectまたは
+    #範囲内：＋1/範囲外：－1
+
+    yoko, tate = +1, +1
+    if obj_rct.left < scr_rct.left or scr_rct.right < obj_rct.right:
+        yoko = -1
+    if obj_rct.top < scr_rct.top or scr_rct.bottom < obj_rct.bottom:
+        tate = -1
+    return yoko, tate
+
+
 def main():
     clock = pg.time.Clock()
     #練習1
@@ -28,6 +40,7 @@ def main():
     bomb_rct.centery = random.randint(0,scrn_rct.height)
     scrn_sfc.blit(bomb_sfc,bomb_rct)
 
+    vx, vy = +1, +1
     #練習2
     while True:
         scrn_sfc.blit(pgbg_sfc,pgbg_rct)
@@ -44,12 +57,29 @@ def main():
             tori_rct.centerx -= 1
         if key_dct[pg.K_RIGHT]:
             tori_rct.centerx += 1
+        if check_bound(tori_rct,scrn_rct) != (+1,+1):
+            if key_dct[pg.K_UP]:
+                tori_rct.centery += 1
+            if key_dct[pg.K_DOWN]:
+                tori_rct.centery -= 1
+            if key_dct[pg.K_LEFT]:
+                tori_rct.centerx += 1
+            if key_dct[pg.K_RIGHT]:
+                tori_rct.centerx -= 1
         scrn_sfc.blit(tori_sfc, tori_rct)
         
         #練習6
-        vx, vy = +1, +1
         bomb_rct.move_ip(vx, vy)
         scrn_sfc.blit(bomb_sfc,bomb_rct)
+        yoko,tate = check_bound(bomb_rct,scrn_rct)
+        vx *= yoko
+        vy *= tate
+
+        #練習8
+        if tori_rct.colliderect(bomb_rct):
+            return
+        
+        
         pg.display.update()
         clock.tick(1000)
 
