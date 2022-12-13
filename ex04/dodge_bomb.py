@@ -117,7 +117,6 @@ def main():
         vx *= hyoko
         vy *= htate
 
-
         
         
         #練習8
