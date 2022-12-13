@@ -14,11 +14,6 @@ def check_bound(obj_rct,scr_rct):
         tate = -1
     return yoko, tate
 
-
-
-
-
-
 def main():
     clock = pg.time.Clock()
     #練習1
@@ -54,9 +49,6 @@ def main():
     help_rct.centery = random.randint(0,scrn_rct.height)
     scrn_sfc.blit(help_sfc,help_rct)
 
-
-
-
     vx, vy = +1, +1
     #練習2
     while True:
@@ -87,11 +79,7 @@ def main():
             if key_dct[pg.K_LEFT]:
                 tori_rct.centerx += 1
             if key_dct[pg.K_RIGHT]:
-                tori_rct.centerx -= 1
-            
-
-            
-                
+                tori_rct.centerx -= 1      
 
         scrn_sfc.blit(tori_sfc, tori_rct)
         
@@ -116,8 +104,6 @@ def main():
         vy *= tate
         vx *= hyoko
         vy *= htate
-
-        
         
         #練習8
         if tori_rct.colliderect(bomb_rct):
@@ -137,12 +123,9 @@ def main():
             tori_rct = tori_sfc.get_rect()
             tori_rct.center = (hyoko,htate)
             scrn_sfc.blit(tori_sfc, tori_rct)
-
-           
-        
+     
         pg.display.update()
         clock.tick(1000)
-
 
 if __name__ == "__main__":
     pg.init()
