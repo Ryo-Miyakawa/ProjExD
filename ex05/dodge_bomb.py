@@ -1,7 +1,8 @@
-import pygame as pg
 import random
 import sys
 import os
+
+import pygame as pg
 
 MAX_SHOTS = 2
 
