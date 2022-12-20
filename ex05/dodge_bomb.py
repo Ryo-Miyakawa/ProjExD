@@ -1,8 +1,11 @@
 import pygame as pg
 import random
 import sys
+import os
 
+MAX_SHOTS = 2
 
+main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 
 class Screen:
@@ -31,12 +34,14 @@ class Bird:
         self.sfc = pg.transform.rotozoom(self.sfc, 0, ratio)#2.0)
         self.rct = self.sfc.get_rect()
         self.rct.center = xy#900, 400
+        self.reloading = 0
 
     def blit(self,scr:Screen):
         scr.sfc.blit(self.sfc,self.rct)
     
     def update(self, scr:Screen):
         key_dct = pg.key.get_pressed()
+        wall_sound = load_sound("car_door.wav")
         for key, delta in Bird.key_delta.items():
             if key_dct[key]:
                 self.rct.centerx += delta[0]
@@ -44,7 +49,13 @@ class Bird:
             if check_bound(self.rct, scr.rct) != (+1, +1):
                 self.rct.centerx -= delta[0]
                 self.rct.centery -= delta[1]
+                if pg.mixer:
+                    wall_sound.play()#追加１：壁にぶつかると衝突音が鳴る
         self.blit(scr)
+    
+    def gunpos(self):
+        pos = self.facing * self.gun_offset + self.rect.centerx
+        return pos, self.rect.top
 
 
 class Bomb:
@@ -67,12 +78,46 @@ class Bomb:
         self.vy *= tate
         self.blit(scr)
 
-        #scrn_sfc.blit(bomb_sfc, bomb_rct)
-
-        #scrn_sfc.blit(bomb_sfc, bomb_rct) 
-        #vx, vy = +1, +1
         
+class Enemy:#追加3：チキンにぶつかると自機が大きくなる機能を追加
+    def __init__(self,img_path,ratio,vxy,scr:Screen):
+        self.sfc = pg.image.load(img_path)
+        self.sfc = pg.transform.rotozoom(self.sfc, 0, ratio)
+        self.rct = self.sfc.get_rect()
+        self.rct.centerx = random.randint(0, scr.rct.width)
+        self.rct.centery = random.randint(0, scr.rct.height)
+        self.vx, self.vy = vxy
 
+    def blit(self,scr:Screen):
+        scr.sfc.blit(self.sfc,self.rct)
+
+    def update(self,scr:Screen):
+        self.rct.move_ip(self.vx, self.vy) 
+        yoko, tate = check_bound(self.rct, scr.rct)
+        self.vx *= yoko
+        self.vy *= tate
+        self.blit(scr)
+
+
+class Help:#追加4：小さいこうかとんに接触すると自機が小さくなる機能を追加
+    def __init__(self,img_path,ratio,vxy,scr:Screen):
+        self.sfc = pg.image.load(img_path)
+        self.sfc = pg.transform.rotozoom(self.sfc, 0, ratio)
+        self.rct = self.sfc.get_rect()
+        self.rct.centerx = random.randint(0, scr.rct.width)
+        self.rct.centery = random.randint(0, scr.rct.height)
+        self.vx, self.vy = vxy
+
+    def blit(self,scr:Screen):
+        scr.sfc.blit(self.sfc,self.rct)
+
+    def update(self,scr:Screen):
+        self.rct.move_ip(self.vx, self.vy) 
+        yoko, tate = check_bound(self.rct, scr.rct)
+        self.vx *= yoko
+        self.vy *= tate
+        self.blit(scr)
+    
 
 def check_bound(obj_rct, scr_rct):
     """
@@ -87,6 +132,34 @@ def check_bound(obj_rct, scr_rct):
         tate = -1
     return yoko, tate
 
+class Shot:
+    def __init__(self, xy ):
+        self.sfc = pg.image.load("ex05/data/shot.gif")
+        self.rxt = self.sfc.get_rect()
+        self.rct = self.sfc.get_rect()
+        self.vx, self.vy = 0,-3
+        self.rct.center = xy
+
+    def blit(self, scr:Screen):
+        scr.sfc.blit(self.sfc, self.rct)
+
+    def update(self, scr:Screen):
+        self.rct.move_ip(self.vx, self.vy)
+        self.blit(scr)
+
+
+def load_sound(file):
+    """because pygame can be be compiled without mixer."""
+    if not pg.mixer:
+        return None
+    file = os.path.join(main_dir, "data", file)
+    try:
+        sound = pg.mixer.Sound(file)
+        return sound
+    except pg.error:
+        print("Warning, unable to load, %s" % file)
+    return None
+
 
 def main():
     clock =pg.time.Clock()
@@ -95,12 +168,28 @@ def main():
 
     # 練習３
     kkt = Bird("fig/6.png",2.0,(900,400))
-    # scrn_sfcにtori_rctに従って，tori_sfcを貼り付ける
-    kkt.update(scr) 
+    kkt.update(scr)
+
+    if pg.mixer:
+        music = os.path.join(main_dir, "data", "house_lo.wav")#追加2：BGMを導入
+        pg.mixer.music.load(music)
+        pg.mixer.music.play(-1)
+
 
     # 練習５
-    bkd = Bomb((255,0,0), 10, (+1, +1), scr)
-    bkd.update(scr)
+    bkd_lst = []
+    for _ in range(5):
+        bkd = Bomb((255,0,0), 10, (+1, +1), scr)
+        bkd_lst.append(bkd)
+    #bkd.update(scr)
+
+    ekt = Enemy("fig/kfc.png",0.1,(+1,+1),scr)
+    ekt.update(scr)
+
+    hit = Help("fig/0.png",1.0,(+1,+1),scr)
+    hit.update(scr)
+
+    shots = 0
 
     # 練習２
     while True:
@@ -111,10 +200,23 @@ def main():
                 return
             
         kkt.update(scr)
-        bkd.update(scr)
-        # 練習８
-        if kkt.rct.colliderect(bkd.rct):
-            return
+        ekt.update(scr)
+        hit.update(scr)
+
+        if kkt.rct.colliderect(hit.rct):
+            kkt = Bird("fig/6.png",0.5,(900,400))
+        if kkt.rct.colliderect(ekt.rct):
+            kkt = Bird("fig/6.png",4.0,(900,400))
+        for i in range(5):
+            bkd_lst[i].update(scr)
+            if kkt.rct.colliderect(bkd_lst[i].rct):
+                return
+        
+        key_dct = pg.key.get_pressed()
+        if key_dct[pg.K_SPACE]:
+            shots = Shot(kkt.rct.center)
+        if shots:
+            shots.update(scr)
 
         pg.display.update()
         clock.tick(1000)
