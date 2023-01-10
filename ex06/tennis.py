@@ -2,7 +2,7 @@ import pygame as pg
 import random
 import time
 import sys
-import tkinter as tk
+
 
 
 SCREENRECT = pg.Rect(0, 0, 1321, 701)
@@ -96,11 +96,7 @@ class Ball:  # ボールのクラス
 
 
 def check_bound(obj_rct, scr_rct):
-    """
-    第1引数：こうかとんrectまたは爆弾rect
-    第2引数：スクリーンrect
-    範囲内：+1／範囲外：-1
-    """
+
     yoko, tate = +1, +1
     if obj_rct.left < scr_rct.left or scr_rct.right < obj_rct.right:
         yoko = -1
@@ -112,12 +108,11 @@ def button_click(event):
     btn = event.widget
     txt = btn["text"]
 
-def start():
+def start():#start画面の作成
     scr1 = Screen("2Dテニス", SCREENRECT.size, "fig/tennis_court.jpg")
     clock = pg.time.Clock()
     while True:
         scr1.blit()
-        label = tk.Label(scr1, text = "push space") 
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return
@@ -126,7 +121,6 @@ def start():
             return
         pg.display.update()
         clock.tick(1000)
-        label.pack()
 
 def main():
     global fullscreen
